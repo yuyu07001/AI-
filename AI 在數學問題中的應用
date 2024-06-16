@@ -1,0 +1,263 @@
+#include <iostream>
+#include <cstdlib>
+#include <ctime>
+#include <cmath>
+#include <sstream>
+#include <iomanip>				// For std::setprecision
+
+ using namespace std;
+
+ 
+// Function to generate a random integer within a specified range
+  int
+generateRandomInt (int min, int max)
+{
+  
+return rand () % (max - min + 1) + min;
+
+}
+
+
+ 
+// Function to generate a simple arithmetic problem
+pair < string, int >
+generateArithmeticProblem ()
+{
+  
+int num1 = generateRandomInt (1, 10);
+  
+int num2 = generateRandomInt (1, 10);
+  
+char operators[] = { '+', '-', '*', '/' };
+  
+char op = operators[rand () % 4];
+  
+ 
+	// Ensure division results in an integer
+	if (op == '/' && num1 % num2 != 0)
+	{
+	  
+num1 = num2 * generateRandomInt (2, 5);	// to ensure divisibility
+	}
+  
+ 
+string problem = to_string (num1) + " " + op + " " + to_string (num2);
+  
+int correctAnswer;
+  
+ 
+switch (op)
+	{
+	
+case '+':
+	  
+correctAnswer = num1 + num2;
+	  
+break;
+	
+case '-':
+	  
+correctAnswer = num1 - num2;
+	  
+break;
+	
+case '*':
+	  
+correctAnswer = num1 * num2;
+	  
+break;
+	
+case '/':
+	  
+correctAnswer = num1 / num2;
+	  
+break;
+	
+default:
+	  
+correctAnswer = 0;		// Handle unexpected operator (shouldn't happen)
+	  break;
+	
+}
+  
+ 
+return make_pair (problem, correctAnswer);
+
+}
+
+
+ 
+// Function to generate a quadratic problem with valid coefficients
+pair < string, pair < double, double >>
+generateQuadraticProblem ()
+{
+  
+int a, b, c;
+  
+ 
+  do
+	{
+	  
+a = generateRandomInt (1, 5);
+	  
+b = generateRandomInt (-5, 5);
+	  
+c = generateRandomInt (-5, 5);
+	
+}
+  while (a == 1 || b == 0 || c == 0);	// Ensure valid quadratic equation
+  
+double x1, x2;
+  
+ 
+	// Calculate roots (even if imaginary for simplicity)
+	x1 = -b / (2.0 * a);
+  
+x2 = sqrt (abs (b * b - 4 * a * c)) / (2.0 * a);
+  
+ 
+string problem = "Solve for x: " + to_string (a) + "x^2";
+  
+if (b >= 0)
+	{
+	  
+problem += " + " + to_string (b) + "x";
+	
+}
+  else
+	{
+	  
+problem += " - " + to_string (-b) + "x";
+	
+}
+  
+if (c >= 0)
+	{
+	  
+problem += " + " + to_string (c);
+	
+}
+  else
+	{
+	  
+problem += " - " + to_string (-c);
+	
+}
+  
+ 
+return make_pair (problem, make_pair (x1, x2));
+
+}
+
+
+ 
+// Function to generate a calculus problem (not implemented in this example)
+  pair < string, string > generateCalculusProblem ()
+{
+  
+string problem = "Find the derivative of a function";
+  
+string derivative = "Not implemented";	// Placeholder for derivative calculation
+  
+	// Actual calculation of derivatives would go here (for simplicity, omitted in this example)
+	
+return make_pair (problem, derivative);
+
+}
+
+
+ 
+int
+main ()
+{
+  
+srand (static_cast < unsigned int >(time (nullptr)));	// Seed the random number generator
+  
+cout << "Welcome to the Math Problem Generator!" << endl;
+  
+cout << "Choose difficulty level (easy, medium, hard): ";
+  
+ 
+string difficulty;
+  
+cin >> difficulty;
+  
+ 
+if (difficulty != "easy" && difficulty != "medium"
+		 && difficulty != "hard")
+	{
+	  
+cout <<
+		"Invalid difficulty level. Please choose from easy, medium, or hard."
+		<< endl;
+	  
+return 1;
+	
+}
+  
+ 
+pair < string, string > problemAndAnswer;
+  
+ 
+if (difficulty == "easy")
+	{
+	  
+auto arithmeticProblem = generateArithmeticProblem ();
+	  
+problemAndAnswer.first = arithmeticProblem.first;
+	  
+problemAndAnswer.second = to_string (arithmeticProblem.second);
+	
+}
+  else if (difficulty == "medium")
+	{
+	  
+auto quadraticProblem = generateQuadraticProblem ();
+	  
+stringstream ss;
+	  
+ss << fixed << setprecision (6) << quadraticProblem.second.first;	// Set precision to 6 decimal places
+	  problemAndAnswer.first = quadraticProblem.first;
+	  
+problemAndAnswer.second = ss.str ();
+	
+}
+  else if (difficulty == "hard")
+	{
+	  
+auto calculusProblem = generateCalculusProblem ();
+	  
+problemAndAnswer.first = calculusProblem.first;
+	  
+problemAndAnswer.second = calculusProblem.second;
+	
+}
+  
+ 
+cout << "\nYour problem is: " << problemAndAnswer.first << " = 0" << endl;	// Adding "= 0" to represent an equation
+  cout << "Enter your answer: ";
+  
+ 
+string userAnswer;
+  
+cin >> userAnswer;
+  
+ 
+if (userAnswer == problemAndAnswer.second)
+	{
+	  
+cout << "Congratulations! Your answer is correct." << endl;
+	
+}
+  else
+	{
+	  
+cout << "Sorry, that's incorrect. The correct answer is: " <<
+		problemAndAnswer.second << endl;
+	
+}
+  
+ 
+return 0;
+
+}
